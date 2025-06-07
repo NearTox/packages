@@ -1,3 +1,8 @@
+## 4.1.0
+
+- Adds support for classes that support fromJson/toJson. [#117261](https://github.com/flutter/flutter/issues/117261)
+- Adds annotation that enable custom string encoder/decoder [#110781](https://github.com/flutter/flutter/issues/110781)
+
 ## 4.0.0
 
 - Make Route mixins public.
