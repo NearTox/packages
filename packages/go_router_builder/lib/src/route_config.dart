@@ -303,7 +303,14 @@ class GoRouteConfig extends RouteBaseConfig {
         );
       }
     }
-    final String fromStateExpression = decodeParameter(element, _pathParams);
+    final List<ElementAnnotation>? metadata = _fieldMetadata(
+      element.displayName,
+    );
+    final String fromStateExpression = decodeParameter(
+      element,
+      _pathParams,
+      metadata,
+    );
 
     if (element.isPositional) {
       return '$fromStateExpression,';
@@ -328,7 +335,8 @@ class GoRouteConfig extends RouteBaseConfig {
       );
     }
 
-    return encodeField(field);
+    final List<ElementAnnotation>? metadata = _fieldMetadata(fieldName);
+    return encodeField(field, metadata);
   }
 
   String get _locationQueryParams {
@@ -424,19 +432,19 @@ mixin $_mixinName on GoRouteData {
   $_castedSelf
   @override
   String get location => GoRouteData.\$location($_locationArgs,$_locationQueryParams);
-  
+
   @override
   void go(BuildContext context) =>
       context.go(location${_extraParam != null ? ', extra: $selfFieldName.$extraFieldName' : ''});
-  
+
   @override
   Future<T?> push<T>(BuildContext context) =>
       context.push<T>(location${_extraParam != null ? ', extra: $selfFieldName.$extraFieldName' : ''});
-  
+
   @override
   void pushReplacement(BuildContext context) =>
       context.pushReplacement(location${_extraParam != null ? ', extra: $selfFieldName.$extraFieldName' : ''});
-  
+
   @override
   void replace(BuildContext context) =>
       context.replace(location${_extraParam != null ? ', extra: $selfFieldName.$extraFieldName' : ''});
@@ -770,6 +778,14 @@ $routeDataClassName.$dataConvertionFunctionName(
 
   PropertyAccessorElement2? _field(String name) =>
       routeDataClass.getGetter2(name);
+
+  List<ElementAnnotation>? _fieldMetadata(String name) =>
+      routeDataClass.fields2
+          .firstWhereOrNull(
+            (FieldElement2 element) => element.displayName == name,
+          )
+          ?.metadata2
+          .annotations;
 
   /// The name of `RouteData` subclass this configuration represents.
   @protected
